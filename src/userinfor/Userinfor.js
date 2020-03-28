@@ -61,7 +61,7 @@ export default class Userinfor extends Component {
         
     }
     exit=()=>{
-        AsyncStorage.clear();
+        AsyncStorage.removeItem('user');
         Actions.login();
     }
     render() {

@@ -53,9 +53,39 @@ const App = () => {
             })
     }
     
-    useEffect(()=>{
-        init();    
-    },[])
+    useEffect(() => {
+        init();
+        BackHandler.addEventListener('hardwareBackPress', ()=>{
+            if(Actions.currentScene==='home'){
+                console.log(Actions.currentScene);
+                if(new Date().getTime()-now<2000){
+                    BackHandler.exitApp();
+                }
+                else{
+                    ToastAndroid.show("确定退出吗",100);
+                    now =new Date().getTime();
+                    return true;
+                }
+                
+            }
+            else if(Actions.currentScene==='login'){
+                console.log(Actions.currentScene);
+                if(new Date().getTime()-now<2000){
+                    BackHandler.exitApp();
+                }
+                else{
+                    ToastAndroid.show("确定退出吗",100);
+                    now =new Date().getTime();
+                    return true;
+                }
+            }
+            else{
+                console.log(Actions.currentScene);
+                Actions.pop();
+                return true;
+            }
+        });
+      });
     let afterInstall =()=>{
         console.log("after install")
         setInstall(false)
@@ -68,25 +98,7 @@ const App = () => {
     
     
     return (
-        <Router
-            backAndroidHandler={()=>{
-                if(Actions.currentScene=='home'||Actions.currentScene=='login'){
-                    if(new Date().getTime()-now<2000){
-                        BackHandler.exitApp();
-                    }
-                    else{
-                        ToastAndroid.show("确定退出吗",100);
-                        now =new Date().getTime();
-                        return true;
-                    }
-                    
-                }
-                else{
-                    Actions.pop();
-                    return true;
-                }
-            }}
-        >
+        <Router>
             <Overlay>
                 <Modal key="modal" hideNavBar>
                     

@@ -4,18 +4,6 @@ import {Actions} from 'react-native-router-flux'
 import {Grid,Icon} from '@ant-design/react-native'
 import {myFetch} from "../utils/index"
 const {width,height}=Dimensions.get("window");
-let now=0;
-BackHandler.addEventListener('back',()=>{
-    console.log(new Date().getTime());
-    if(new Date().getTime()-now<2000){
-        BackHandler.exitApp();
-    }
-    else{
-        ToastAndroid.show("确定退出吗",100);
-        now =new Date().getTime();
-        return true;
-    }
-})
 
 export default class Login extends Component {
     

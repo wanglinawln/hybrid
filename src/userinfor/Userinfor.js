@@ -7,12 +7,14 @@ import {Actions} from 'react-native-router-flux'
 const {width}=Dimensions.get("window");
 
 const options = {
-    title: 'Select Avatar',
-    customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
+    title: '选择头像',
     storageOptions: {
       skipBackup: true,
       path: 'images',
     },
+    cancelButtonTitle:'取消',
+    takePhotoButtonTitle:'拍照',
+    chooseFromLibraryButtonTitle:'从图库选择照片'
 };
 
 export default class Userinfor extends Component {

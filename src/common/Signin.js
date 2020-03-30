@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {View,Text,StyleSheet,Image,TouchableOpacity,TextInput,ToastAndroid,AsyncStorage,Dimensions,ActivityIndicator} from 'react-native';
+import {View,Text,StyleSheet,Image,TouchableOpacity,TextInput,ToastAndroid,AsyncStorage,Dimensions,ActivityIndicator, Alert} from 'react-native';
 import {Actions} from 'react-native-router-flux'
 import {Grid,Icon} from '@ant-design/react-native'
 import {myFetch} from "../utils/index"
@@ -10,8 +10,15 @@ export default class Signin extends Component {
         this.state={
             username:'',
             pwd:'',
+            phone:'',
             isLoading:false
         }
+    }
+    phonehandel=(text)=>{
+        console.log(text)
+        this.setState({
+            phone:text
+        })
     }
     userhandel=(text)=>{
         console.log(text)
@@ -26,18 +33,32 @@ export default class Signin extends Component {
         })
     }
     signin=()=>{
-        this.setState({isloading:true})
+        
         myFetch.post('/signin',{
             username:this.state.username,
-            pwd:this.state.pwd
-        }).then(res=>
-            AsyncStorage.setItem("signin",JSON.stringify(res.data))
-            .then(()=>{
-                this.setState({isLoading:false})
-                Actions.login()
-            })            
+            pwd:this.state.pwd,
+            phone:this.state.phone
+        }).then(res=>{
+            if(res.data.username&&res.data.pwd&&res.data.phone){
+                if(res.data.status==='0'){
+                    ToastAndroid.show("该用户已被注册！",100);
+                }
+                else{
+                    this.setState({isloading:true});
+                    AsyncStorage.setItem("signin",JSON.stringify(res.data))
+                    .then(()=>{
+                        this.setState({isLoading:false})
+                        Actions.login()
+                    })       
+                }
+            }
+            else{
+                ToastAndroid.show('手机号、用户名或密码不能为空！',100);
+            }
+            
+                 
                 
-        )
+        })
     }
     render() {
         return (
@@ -47,6 +68,14 @@ export default class Signin extends Component {
                     flexWrap:'wrap',
                     alignItems:"center"
                 }}>
+                    <View style={[{flexDirection:'row'},styles.input]}>
+                        <Icon name="phone" color="red"/>
+                        <TextInput 
+                            placeholder="手机号"
+                            onChangeText={this.phonehandel}
+                            style={{paddingBottom:0,paddingTop:0}}
+                        />
+                    </View>
                     <View style={[{flexDirection:'row'},styles.input]}>
                         <Icon name="user" color="red"/>
                         <TextInput 
@@ -77,6 +106,7 @@ export default class Signin extends Component {
                     this.state.isloading
                     ?<View style={styles.innerBox}>
                         <ActivityIndicator size="large" color="red"/>
+                        <Text>注册成功！</Text>
                     </View>
                     
                     :null

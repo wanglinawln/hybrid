@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {View,Text,StyleSheet,Image,TouchableOpacity,TextInput,AsyncStorage,ActivityIndicator,Dimensions,BackHandler,ToastAndroid} from 'react-native';
+import {View,Text,StyleSheet,Image,TouchableOpacity,TextInput,AsyncStorage,ActivityIndicator,Dimensions,BackHandler,ToastAndroid, Alert} from 'react-native';
 import {Actions} from 'react-native-router-flux'
 import {Grid,Icon} from '@ant-design/react-native'
 import {myFetch} from "../utils/index"
@@ -29,20 +29,27 @@ export default class Login extends Component {
         })
     }
     login=()=>{
-        this.setState({isloading:true})
-
+        
         myFetch.post('/login',{
             username:this.state.username,
             pwd:this.state.pwd
-        }).then(res=>
+        }).then(res=>{
             //根据返回状态进行判断，正确时跳到首页
-            AsyncStorage.setItem("user",JSON.stringify(res.data))
-            .then(()=>{
-                this.setState({isLoading:false})
-                Actions.homepage()
-            })            
-                
-        )
+            if(res.data.username&&res.data.pwd){
+                this.setState({isloading:true});
+                AsyncStorage.setItem("user",JSON.stringify(res.data))
+                .then(()=>{
+                    this.setState({isLoading:false})
+                    Actions.homepage()
+                })      
+            }
+            else{
+                this.setState({isLoading:false});
+                ToastAndroid.show("用户名或密码不能为空！",100);
+            }
+                  
+            
+        })
     }
     render() {
         return (
@@ -82,6 +89,7 @@ export default class Login extends Component {
                     this.state.isloading
                     ?<View style={styles.innerBox}>
                         <ActivityIndicator size="large" color="red"/>
+                        <Text>正在登录</Text>
                     </View>
                     
                     :null

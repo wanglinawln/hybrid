@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
-import { Text, View ,ScrollView,ToastAndroid, StyleSheet,Dimensions} from 'react-native'
+import { Text, View ,ScrollView,ToastAndroid, StyleSheet,Dimensions,ActivityIndicator} from 'react-native'
 import Button from "react-native-button"
 
-const {width}=Dimensions.get("window");
+const {width,height}=Dimensions.get("window");
 export default class Publish extends Component {
     constructor(){
         super();
         this.state={
             data:[],
-            page:1
+            page:1,
         }
         this.num=1;
     }
@@ -17,8 +17,9 @@ export default class Publish extends Component {
         .then(res=>res.json())
         .then(res=>{
             this.setState({
-                data:res.data
+                data:res.data,
             })
+            console.log('b');
         })
     }
     getData = (flag)=>{
@@ -79,6 +80,14 @@ export default class Publish extends Component {
                     </View>
                     
                 </ScrollView>
+                {
+                    this.state.data.length>0
+                    ?null
+                    :<View style={styles.innerBox}>
+                    <ActivityIndicator size="large" color="red"/>
+                    <Text>加载中</Text>
+                </View>
+                }
             </View>
         )
 
@@ -130,5 +139,13 @@ const styles=StyleSheet.create({
     txt3:{
         fontSize:12,
         width:width*0.55
+    },
+    innerBox:{
+        width:width,
+        height:height,
+        backgroundColor:'white',
+        justifyContent:"center",
+        alignItems:"center",
+        position:"absolute",
     }
 })
